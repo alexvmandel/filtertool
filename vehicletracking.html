@@ -1,1 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Tracking Lead Subscription Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #0F0F4B;
+            color: #333;
+        }
+        .dashboard {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 15px;
+            height: calc(100vh - 40px);
+        }
+        .panel {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            padding: 20px;
+            width: 33.33%;
+            overflow-y: auto;
+        }
+        h1 {
+            color: #0F0F4B;
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            font-weight: 700;
+        }
+        h2 {
+            color: #0F0F4B;
+            font-size: 1.4rem;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #0F0F4B;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #8264C8;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #FF00A5;
+            box-shadow: 0 0 0 2px rgba(255, 0, 165, 0.2);
+        }
+        .options-group {
+            background-color: #f9f9f9;
+            border: 1px solid #DCDCDC;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .option-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .option-row label {
+            margin: 0 10px 0 0;
+            font-weight: normal;
+            width: 100px;
+        }
+        .slider-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .slider {
+            flex: 1;
+            height: 10px;
+            margin: 0 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #DCDCDC;
+            outline: none;
+            border-radius: 5px;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FF00A5;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FF00A5;
+            cursor: pointer;
+            border: none;
+        }
+        .slider-value {
+            width: 60px;
+            text-align: center;
+            font-weight: bold;
+            color: #0F0F4B;
+        }
+        .table-container {
+            width: 100%;
+            margin-top: 10px;
+            border: 1px solid #DCDCDC;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: white;
+        }
+        
+        .answer-distribution {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .answer-distribution th {
+            background-color: #0F0F4B;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .answer-distribution td {
+            padding: 10px;
+            border-bottom: 1px solid #DCDCDC;
+        }
+        
+        .answer-distribution tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .answer-distribution td:nth-child(2) {
+            font-weight: 500;
+        }
+        
+        .answer-distribution td:last-child {
+            font-weight: 600;
+            color: #0F0F4B;
+        }
+        
+        .answer-distribution tr:nth-child(odd) {
+            background-color: #F8F8FB;
+        }
+        .stats-box {
+            background-color: #F5F5F5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #8264C8;
+        }
+        .stats-heading {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #0F0F4B;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0F0F4B;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .reasons-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .reasons-list li {
+            padding: 10px;
+            border-bottom: 1px solid #DCDCDC;
+            display: flex;
+            justify-content: space-between;
+        }
+        .reasons-list li:last-child {
+            border-bottom: none;
+        }
+        .reason-percent {
+            font-weight: bold;
+            color: #FF00A5;
+        }
+        .recommendations {
+            padding: 15px;
+            background-color: #FADC28;
+            border-radius: 8px;
+            border-left: 4px solid #FF5A41;
+            color: #0F0F4B;
+        }
+        .recommendation-item {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .recommendation-action {
+            color: #0F0F4B;
+            font-weight: bold;
+        }
+        .cap-status {
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .cap-unlikely {
+            background-color: #FF5A41;
+            color: white;
+        }
+        .cap-achievable {
+            background-color: #00C8C8;
+            color: white;
+        }
+        .progress-wrapper {
+            width: 100%;
+            background-color: #DCDCDC;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: #FF00A5;
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+            position: relative;
+        }
+        .progress-text {
+            position: absolute;
+            right: 10px;
+            color: white;
+            font-weight: bold;
+            line-height: 20px;
+        }
+        
+        .flow-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .flow-table th {
+            background-color: #0F0F4B;
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .flow-table td {
+            padding: 8px;
+            border-bottom: 1px solid #DCDCDC;
+            font-size: 14px;
+        }
+        
+        .flow-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .flow-value {
+            font-weight: bold;
+            color: #0F0F4B;
+        }
+        
+        .bar-container {
+            width: 100%;
+            height: 24px;
+            background-color: #F5F5F5;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bar-working {
+            height: 100%;
+            background-color: #FF00A5;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .bar-other {
+            height: 100%;
+            background-color: #8264C8;
+            position: absolute;
+            top: 0;
+        }
+        
+        .bar-label {
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 0 6px;
+            line-height: 24px;
+        }
+        
+        .flow-legend {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            margin-right: 5px;
+        }
+        
+        .outlook {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #00C8C8;
+            margin-top: 20px;
+        }
+        
+        .outlook p {
+            margin: 0 0 15px;
+            line-height: 1.5;
+        }
+        
+        .outlook p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .text-warning {
+            color: #FF5A41;
+        }
+        
+        .text-success {
+            color: #00C8C8;
+        }
+        
+        /* Brand color buttons and accents */
+        .btn-pink {
+            background-color: #FF00A5;
+            color: white;
+        }
+        .btn-yellow {
+            background-color: #FADC28;
+            color: #0F0F4B;
+        }
+        .btn-orange {
+            background-color: #FF5A41;
+            color: white;
+        }
+        .btn-light-blue {
+            background-color: #00C8C8;
+            color: white;
+        }
+        .btn-purple {
+            background-color: #8264C8;
+            color: white;
+        }
+        .btn-light-grey {
+            background-color: #DCDCDC;
+            color: #0F0F4B;
+        }
+        .btn-dark-grey {
+            background-color: #6478BC;
+            color: white;
+        }
+        
+        /* Competitor table styles */
+        .competitor-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .competitor-table th {
+            background-color: #8264C8;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .competitor-table td {
+            padding: 8px;
+            border-bottom: 1px solid #DCDCDC;
+            font-size: 14px;
+        }
+        
+        .competitor-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .competitor-table tr:nth-child(odd) {
+            background-color: #F8F8FB;
+        }
+        
+        .competitor-table .highlight {
+            background-color: rgba(255, 0, 165, 0.1);
+            font-weight: 500;
+        }
+        
+        .comparison-value {
+            font-weight: 600;
+            color: #FF00A5;
+        }
+        
+        .better {
+            color: #00C8C8;
+        }
+        
+        .worse {
+            color: #FF5A41;
+        }
+        
+        .competitor-container {
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        
+        .impact-value {
+            font-weight: bold;
+        }
+        
+        .impact-positive {
+            color: #00C8C8;
+        }
+        
+        .impact-negative {
+            color: #FF5A41;
+        }
+        
+        .impact-neutral {
+            color: #8264C8;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="panel">
+            <h1>Lead Distribution Data</h1>
+            
+            <div class="form-group">
+                <label>Answer Distribution Statistics:</label>
+                <div class="table-container">
+                    <table class="answer-distribution">
+                        <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Answer</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="4">How many vehicles do you need to track?</td>
+                                <td>1-5 vehicles</td>
+                                <td>30%</td>
+                            </tr>
+                            <tr>
+                                <td>6-20 vehicles</td>
+                                <td>40%</td>
+                            </tr>
+                            <tr>
+                                <td>21-50 vehicles</td>
+                                <td>20%</td>
+                            </tr>
+                            <tr>
+                                <td>50+ vehicles</td>
+                                <td>10%</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="4">What is your fleet management budget?</td>
+                                <td>Up to £5,000</td>
+                                <td>25%</td>
+                            </tr>
+                            <tr>
+                                <td>£5,000 - £15,000</td>
+                                <td>40%</td>
+                            </tr>
+                            <tr>
+                                <td>£15,000 - £30,000</td>
+                                <td>25%</td>
+                            </tr>
+                            <tr>
+                                <td>£30,000+</td>
+                                <td>10%</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="5">What type of fleet do you operate?</td>
+                                <td>Delivery</td>
+                                <td>35%</td>
+                            </tr>
+                            <tr>
+                                <td>Service</td>
+                                <td>25%</td>
+                            </tr>
+                            <tr>
+                                <td>Passenger</td>
+                                <td>15%</td>
+                            </tr>
+                            <tr>
+                                <td>Construction</td>
+                                <td>15%</td>
+                            </tr>
+                            <tr>
+                                <td>Mixed</td>
+                                <td>10%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Lead Flow by Day of Week:</label>
+                <div class="flow-legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #FF00A5;"></span>
+                        <span>Working Hours (9am-5pm)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #8264C8;"></span>
+                        <span>Out of Hours</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="flow-table">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Distribution</th>
+                                <th>Working Hours</th>
+                                <th>Out of Hours</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Monday</td>
+                                <td>
+                                    <div class="bar-container">
+                                        <div class="bar-working" style="width: 70%;"><span class="bar-label">65</span></div>
+                                        <div class="bar-other" style="width: 30%; left: 70%;"><span class="bar-label">28</span></div>
+                                    </div>
+                                </td>
+                                <td class="flow-value">65</td>
+                                <td class="flow-value">28</td>
+                                <td class="flow-value">93</td>
+                            </tr>
+                            <tr>
+                                <td>Tuesday</td>
+                                <td>
+                                    <div class="bar-container">
+                                        <div class="bar-working" style="width: 76%;"><span class="bar-label">76</span></div>
+                                        <div class="bar-other" style="width: 24%; left: 76%;"><span class="bar-label">24</span></div>
+                                    </div>
+                                </td>
+                                <td class="flow-value">76</td>
+                                <td class="flow-value">24</td>
+                                <td class="flow-value">100</td>
+                            </tr>
+                            <tr>
+                                <td>Wednesday</td>
+                                <td>
+                                    <div class="bar-container">
+                                        <div class="bar-working" style="width: 73%;"><span class="bar-label">82</span></div>
+                                        <div class="bar-other" style="width: 27%; left: 73%;"><span class="bar-label">30</span></div>
+                                    </div>
+                                </td>
+                                <td class="flow-value">82</td>
+                                <td class="flow-value">30</td>
+                                <td class="flow-value">112</td>
+                            </tr>
+                            <tr>
+                                <td>Thursday</td>
+                                <td>
+                                    <div class="bar-container">
+                                        <div class="bar-working" style="width: 76%;"><span class="bar-label">71</span></div>
+                                        <div class="bar-other" style="width: 24%; left: 76%;"><span class="bar-label">22</span></div>
+                                    </div>
+                                </td>
+                                <td class="flow-value">71</td>
+                                <td class="flow-value">22</td>
+                                <td class="flow-value">93</td>
+                            </tr>
+                            <tr>
+                                <td>Friday</td>
+                                <td>
+                                    <div class="bar-container">
+                                        <div class="bar-working" style="width: 61%;"><span class="bar-label">55</span></div>
+                                        <div class="bar-other" style="width: 39%; left: 61%;"><span class="bar-label">35</span></div>
+                                    </div>
+                                </td>
+                                <td class="flow-value">55</td>
+                                <td class="flow-value">35</td>
+                                <td class="flow-value">90</td>
+                            </tr>
+                            <tr>
+                                <td>Saturday</td>
+                                <td>
+                                    <div class="bar-container">
+                                        <div class="bar-working" style="width: 40%;"><span class="bar-label">32</span></div>
+                                        <div class="bar-other" style="width: 60%; left: 40%;"><span class="bar-label">49</span></div>
+                                    </div>
+                                </td>
+                                <td class="flow-value">32</td>
+                                <td class="flow-value">49</td>
+                                <td class="flow-value">81</td>
+                            </tr>
+                            <tr>
+                                <td>Sunday</td>
+                                <td>
+                                    <div class="bar-container">
+                                        <div class="bar-working" style="width: 34%;"><span class="bar-label">22</span></div>
+                                        <div class="bar-other" style="width: 66%; left: 34%;"><span class="bar-label">43</span></div>
+                                    </div>
+                                </td>
+                                <td class="flow-value">22</td>
+                                <td class="flow-value">43</td>
+                                <td class="flow-value">65</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Weekly Total</strong></td>
+                                <td></td>
+                                <td class="flow-value"><strong>403</strong></td>
+                                <td class="flow-value"><strong>231</strong></td>
+                                <td class="flow-value"><strong>634</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h1>Vehicle Tracking Lead Filter</h1>
+            
+            <div class="form-group">
+                <label for="question1">How many vehicles do you need to track?</label>
+                <select id="question1" onchange="updateResults()">
+                    <option value="any">Any</option>
+                    <option value="1-5">1-5 vehicles</option>
+                    <option value="6-20">6-20 vehicles</option>
+                    <option value="21-50">21-50 vehicles</option>
+                    <option value="50+">50+ vehicles</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="question2">What is your fleet management budget?</label>
+                <select id="question2" onchange="updateResults()">
+                    <option value="any">Any</option>
+                    <option value="up-to-5k">Up to £5,000</option>
+                    <option value="5k-15k">£5,000 - £15,000</option>
+                    <option value="15k-30k">£15,000 - £30,000</option>
+                    <option value="30k+">£30,000+</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="question3">What type of fleet do you operate?</label>
+                <select id="question3" onchange="updateResults()">
+                    <option value="any">Any</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="service">Service</option>
+                    <option value="passenger">Passenger</option>
+                    <option value="construction">Construction</option>
+                    <option value="mixed">Mixed</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="monthly-cap">Monthly Cap:</label>
+                <input type="number" id="monthly-cap" min="1" max="500" value="200" onchange="updateResults()">
+            </div>
+            
+            <div class="form-group">
+                <label for="price-per-lead">Price Per Lead (£):</label>
+                <div class="slider-container">
+                    <span>£0</span>
+                    <input type="range" id="price-per-lead" class="slider" min="1" max="50" value="25" onchange="updateResults()" oninput="updateResults()">
+                    <span>£50</span>
+                </div>
+                <div class="slider-value">£<span id="price-value">25</span></div>
+            
+                <h2>Recommendations</h2>
+                <div class="recommendations" id="recommendations">
+                    <div class="recommendation-item">
+                        <span>Increase price to £35</span>
+                        <span class="recommendation-action">+14%</span>
+                    </div>
+                    <div class="recommendation-item">
+                        <span>Target 6-20 vehicles segment</span>
+                        <span class="recommendation-action">+17%</span>
+                    </div>
+                    <div class="recommendation-item">
+                        <span>Focus on £5,000-£15,000 budget businesses</span>
+                        <span class="recommendation-action">+19%</span>
+                    </div>
+                    <div class="recommendation-item">
+                        <span>Target delivery fleets specifically</span>
+                        <span class="recommendation-action">+15%</span>
+                    </div>
+                </div>
+                
+                <!-- New Competitor Analysis Section -->
+                <h2>Competitor Analysis</h2>
+                <div class="competitor-container">
+                    <div class="table-container">
+                        <table class="competitor-table" id="competitor-table">
+                            <thead>
+                                <tr>
+                                    <th>Client</th>
+                                    <th>Filter Settings</th>
+                                    <th>Price</th>
+                                    <th>Volume</th>
+                                    <th>Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- This will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="stats-box" id="impact-analysis">
+                    <div class="stats-heading">Impact Analysis</div>
+                    <p>Changing your current settings would result in:</p>
+                    <ul class="reasons-list" id="impact-list">
+                        <!-- This will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h1>Projected Outcomes</h1>
+            
+            <div class="stats-box">
+                <div class="stats-heading">Match Percentage (Last 30 Days)</div>
+                <div class="progress-wrapper">
+                    <div class="progress-bar" id="match-progress">
+                        <span class="progress-text">36%</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="match-percent">36%</div>
+            </div>
+            
+            <div class="stats-box">
+                <div class="stats-heading">Leads That Would Be Sold</div>
+                <div class="progress-wrapper">
+                    <div class="progress-bar" id="sold-progress">
+                        <span class="progress-text">24%</span>
+                    </div>
+                </div>
+                <div class="stat-value" id="sold-percent">24%</div>
+            </div>
+            
+            <div id="cap-status-indicator" class="cap-status cap-unlikely">
+                Cap Unlikely to be Achieved
+            </div>
+            
+            <h2>Unsold Reason Summary</h2>
+            <ul class="reasons-list" id="reasons-list">
+                <li>
+                    <span>Price too low (need £10 more)</span>
+                    <span class="reason-percent">14%</span>
+                </li>
+                <li>
+                    <span>Vehicle quantity not specified</span>
+                    <span class="reason-percent">17%</span>
+                </li>
+                <li>
+                    <span>Budget range not specified</span>
+                    <span class="reason-percent">19%</span>
+                </li>
+                <li>
+                    <span>Fleet type not specified</span>
+                    <span class="reason-percent">15%</span>
+                </li>
+            </ul>
+                  
+            <h2>Subscription Outlook</h2>
+            <div class="outlook" id="outlook">
+                <p>Based on current settings, this subscription is <strong class="text-warning">unlikely to meet its monthly cap</strong> of 200 leads. With a match rate of 36% and a sold rate of 24%, you can expect approximately <strong>48 leads per month</strong>, which is <strong>24% of your target</strong>.</p>
+                
+                <p>In the wider client landscape, this subscription would compete with <strong>4 other clients</strong> for similar leads. The average price per lead for comparable filters is <strong>£35</strong>, making your current price of <strong>£25</strong> below market rate.</p>
+                
+                <p>By implementing the recommended changes, particularly increasing your price to £35 and narrowing your audience targeting, you could potentially increase your sold rate to <strong>55%</strong>, yielding approximately <strong>110 leads per month</strong>.</p>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Initial data
+        const leadData = {
+            totalLeads: 1000,
+            priceThresholds: {
+                low: { price: 25, percent: 14 },
+                medium: { price: 30, percent: 7 },
+                high: { price: 35, percent: 0 }
+            },
+            questionDistribution: {
+                vehicles: { 
+                    "1-5": 30, 
+                    "6-20": 40, 
+                    "21-50": 20, 
+                    "50+": 10 
+                },
+                budget: { 
+                    "up-to-5k": 25, 
+                    "5k-15k": 40, 
+                    "15k-30k": 25, 
+                    "30k+": 10 
+                },
+                fleetType: { 
+                    "delivery": 35, 
+                    "service": 25, 
+                    "passenger": 15, 
+                    "construction": 15,
+                    "mixed": 10
+                }
+            }
+        };
+        
+        // Competitor data
+        const competitorData = [
+            {
+                id: 1,
+                name: "FleetGuard Pro",
+                vehicles: "6-20",
+                budget: "5k-15k",
+                fleetType: "delivery",
+                price: 32,
+                baseVolume: 145,
+                baseRevenue: 4640
+            },
+            {
+                id: 2,
+                name: "TrackerTech",
+                vehicles: "21-50",
+                budget: "15k-30k",
+                fleetType: "service",
+                price: 38,
+                baseVolume: 95,
+                baseRevenue: 3610
+            },
+            {
+                id: 3,
+                name: "SmartVehicle",
+                vehicles: "1-5",
+                budget: "up-to-5k",
+                fleetType: "mixed",
+                price: 25,
+                baseVolume: 110,
+                baseRevenue: 2750
+            },
+            {
+                id: 4,
+                name: "ConstructTrack",
+                vehicles: "50+",
+                budget: "30k+",
+                fleetType: "construction",
+                price: 45,
+                baseVolume: 75,
+                baseRevenue: 3375
+            }
+        ];
+        
+        // Function to update competitor table
+        function updateCompetitorTable(q1, q2, q3, price) {
+            const competitorTable = document.getElementById('competitor-table').getElementsByTagName('tbody')[0];
+            competitorTable.innerHTML = '';
+            
+            // Calculate adjustments based on current selections
+            competitorData.forEach(competitor => {
+                const row = document.createElement('tr');
+                
+                // Calculate volume and revenue adjustments based on filter choices
+                let volumeMultiplier = 1.0;
+                let revenueMultiplier = 1.0;
+                
+                // Price comparison affects volume
+                if (price < competitor.price) {
+                    volumeMultiplier += 0.2; // Higher volume due to lower price
+                } else if (price > competitor.price) {
+                    volumeMultiplier -= 0.15; // Lower volume due to higher price
+                }
+                
+                // Filter specificity affects volume and revenue
+                if ((q1 !== 'any' && competitor.vehicles === q1) || 
+                    (q2 !== 'any' && competitor.budget === q2) || 
+                    (q3 !== 'any' && competitor.fleetType === q3)) {
+                    // Competing directly in the same segment
+                    volumeMultiplier -= 0.2;
+                    revenueMultiplier -= 0.15;
+                }
+                
+                const volume = Math.round(competitor.baseVolume * volumeMultiplier);
+                const revenue = Math.round(competitor.baseRevenue * revenueMultiplier);
+                
+                // Format filter settings
+                let filterSettings = '';
+                if (competitor.vehicles !== 'any') filterSettings += `${competitor.vehicles} vehicles, `;
+                if (competitor.budget !== 'any') {
+                    switch(competitor.budget) {
+                        case 'up-to-5k': filterSettings += 'Up to £5k, '; break;
+                        case '5k-15k': filterSettings += '£5k-£15k, '; break;
+                        case '15k-30k': filterSettings += '£15k-£30k, '; break;
+                        case '30k+': filterSettings += '£30k+, '; break;
+                    }
+                }
+                if (competitor.fleetType !== 'any') filterSettings += `${competitor.fleetType} fleet`;
+                if (filterSettings.endsWith(', ')) filterSettings = filterSettings.slice(0, -2);
+                if (!filterSettings) filterSettings = 'No specific filters';
+                
+                // Create row cells
+                row.innerHTML = `
+                    <td>${competitor.name}</td>
+                    <td>${filterSettings}</td>
+                    <td>£${competitor.price}</td>
+                    <td>${volume} leads</td>
+                    <td>£${revenue}</td>
+                `;
+                
+                // Highlight row if directly competing
+                if ((q1 !== 'any' && competitor.vehicles === q1) && 
+                    (q2 !== 'any' && competitor.budget === q2) && 
+                    (q3 !== 'any' && competitor.fleetType === q3)) {
+                    row.classList.add('highlight');
+                }
+                
+                competitorTable.appendChild(row);
+            });
+            
+            // Add your subscription row
+            const yourRow = document.createElement('tr');
+            yourRow.classList.add('highlight');
+            
+            // Format your filter settings
+            let yourFilterSettings = '';
+            if (q1 !== 'any') yourFilterSettings += `${q1} vehicles, `;
+            if (q2 !== 'any') {
+                switch(q2) {
+                    case 'up-to-5k': yourFilterSettings += 'Up to £5k, '; break;
+                    case '5k-15k': yourFilterSettings += '£5k-£15k, '; break;
+                    case '15k-30k': yourFilterSettings += '£15k-£30k, '; break;
+                    case '30k+': yourFilterSettings += '£30k+, '; break;
+                }
+            }
+            if (q3 !== 'any') yourFilterSettings += `${q3} fleet`;
+            if (yourFilterSettings.endsWith(', ')) yourFilterSettings = yourFilterSettings.slice(0, -2);
+            if (!yourFilterSettings) yourFilterSettings = 'No specific filters';
+            
+            // Calculate your projected volume and revenue
+            const matchPercent = parseInt(document.getElementById('match-percent').textContent);
+            const soldPercent = parseInt(document.getElementById('sold-percent').textContent);
+            const projectedVolume = Math.round((leadData.totalLeads * soldPercent) / 100);
+            const projectedRevenue = projectedVolume * price;
+            
+            yourRow.innerHTML = `
+                <td><strong>Your Subscription</strong></td>
+                <td>${yourFilterSettings}</td>
+                <td>£${price}</td>
+                <td>${projectedVolume} leads</td>
+                <td>£${projectedRevenue}</td>
+            `;
+            
+            competitorTable.appendChild(yourRow);
+            
+            // Update impact analysis
+            updateImpactAnalysis(q1, q2, q3, price);
+        }
+        
+        // Function to update impact analysis
+        function updateImpactAnalysis(q1, q2, q3, price) {
+            const impactList = document.getElementById('impact-list');
+            impactList.innerHTML = '';
+            
+            const soldPercent = parseInt(document.getElementById('sold-percent').textContent);
+            const projectedVolume = Math.round((leadData.totalLeads * soldPercent) / 100);
+            const projectedRevenue = projectedVolume * price;
+            
+            // Calculate average competitor metrics
+            let avgCompPrice = 0;
+            let avgCompVolume = 0;
+            let avgCompRevenue = 0;
+            
+            competitorData.forEach(comp => {
+                avgCompPrice += comp.price;
+                avgCompVolume += comp.baseVolume;
+                avgCompRevenue += comp.baseRevenue;
+            });
+            
+            avgCompPrice = Math.round(avgCompPrice / competitorData.length);
+            avgCompVolume = Math.round(avgCompVolume / competitorData.length);
+            avgCompRevenue = Math.round(avgCompRevenue / competitorData.length);
+            
+            // Create impact items
+            const priceImpact = document.createElement('li');
+            if (price < avgCompPrice) {
+                priceImpact.innerHTML = `
+                    <span>Your price (£${price}) vs. avg. competitor (£${avgCompPrice})</span>
+                    <span class="impact-value impact-negative">-${avgCompPrice - price} (${Math.round((price/avgCompPrice) * 100)}%)</span>
+                `;
+            } else if (price > avgCompPrice) {
+                priceImpact.innerHTML = `
+                    <span>Your price (£${price}) vs. avg. competitor (£${avgCompPrice})</span>
+                    <span class="impact-value impact-positive">+${price - avgCompPrice} (${Math.round((price/avgCompPrice) * 100)}%)</span>
+                `;
+            } else {
+                priceImpact.innerHTML = `
+                    <span>Your price (£${price}) vs. avg. competitor (£${avgCompPrice})</span>
+                    <span class="impact-value impact-neutral">Equal</span>
+                `;
+            }
+            impactList.appendChild(priceImpact);
+            
+            const volumeImpact = document.createElement('li');
+            if (projectedVolume < avgCompVolume) {
+                volumeImpact.innerHTML = `
+                    <span>Your volume (${projectedVolume}) vs. avg. competitor (${avgCompVolume})</span>
+                    <span class="impact-value impact-negative">-${avgCompVolume - projectedVolume} (${Math.round((projectedVolume/avgCompVolume) * 100)}%)</span>
+                `;
+            } else if (projectedVolume > avgCompVolume) {
+                volumeImpact.innerHTML = `
+                    <span>Your volume (${projectedVolume}) vs. avg. competitor (${avgCompVolume})</span>
+                    <span class="impact-value impact-positive">+${projectedVolume - avgCompVolume} (${Math.round((projectedVolume/avgCompVolume) * 100)}%)</span>
+                `;
+            } else {
+                volumeImpact.innerHTML = `
+                    <span>Your volume (${projectedVolume}) vs. avg. competitor (${avgCompVolume})</span>
+                    <span class="impact-value impact-neutral">Equal</span>
+                `;
+            }
+            impactList.appendChild(volumeImpact);
+            
+            const revenueImpact = document.createElement('li');
+            if (projectedRevenue < avgCompRevenue) {
+                revenueImpact.innerHTML = `
+                    <span>Your revenue (£${projectedRevenue}) vs. avg. competitor (£${avgCompRevenue})</span>
+                    <span class="impact-value impact-negative">-£${avgCompRevenue - projectedRevenue} (${Math.round((projectedRevenue/avgCompRevenue) * 100)}%)</span>
+                `;
+            } else if (projectedRevenue > avgCompRevenue) {
+                revenueImpact.innerHTML = `
+                    <span>Your revenue (£${projectedRevenue}) vs. avg. competitor (£${avgCompRevenue})</span>
+                    <span class="impact-value impact-positive">+£${projectedRevenue - avgCompRevenue} (${Math.round((projectedRevenue/avgCompRevenue) * 100)}%)</span>
+                `;
+            } else {
+                revenueImpact.innerHTML = `
+                    <span>Your revenue (£${projectedRevenue}) vs. avg. competitor (£${avgCompRevenue})</span>
+                    <span class="impact-value impact-neutral">Equal</span>
+                `;
+            }
+            impactList.appendChild(revenueImpact);
+            
+            // Add filter specificity insight
+            const filterImpact = document.createElement('li');
+            let filterSpecificity = 0;
+            if (q1 !== 'any') filterSpecificity++;
+            if (q2 !== 'any') filterSpecificity++;
+            if (q3 !== 'any') filterSpecificity++;
+            
+            switch(filterSpecificity) {
+                case 0:
+                    filterImpact.innerHTML = `
+                        <span>Filter specificity</span>
+                        <span class="impact-value impact-negative">None (high volume, low quality)</span>
+                    `;
+                    break;
+                case 1:
+                    filterImpact.innerHTML = `
+                        <span>Filter specificity</span>
+                        <span class="impact-value impact-neutral">Basic (medium volume/quality)</span>
+                    `;
+                    break;
+                case 2:
+                    filterImpact.innerHTML = `
+                        <span>Filter specificity</span>
+                        <span class="impact-value impact-positive">Good (targeted quality)</span>
+                    `;
+                    break;
+                case 3:
+                    filterImpact.innerHTML = `
+                        <span>Filter specificity</span>
+                        <span class="impact-value impact-positive">Optimal (highest quality)</span>
+                    `;
+                    break;
+            }
+            impactList.appendChild(filterImpact);
+        }
+        
+        // Function to update results based on current settings
+        function updateResults() {
+            // Get current values
+            const price = parseInt(document.getElementById('price-per-lead').value);
+            const cap = parseInt(document.getElementById('monthly-cap').value);
+            const q1 = document.getElementById('question1').value;
+            const q2 = document.getElementById('question2').value;
+            const q3 = document.getElementById('question3').value;
+            
+            // Update price display
+            document.getElementById('price-value').textContent = price;
+            
+            // Calculate match percentage (simplistic algorithm for demo)
+            let matchPercent = 36;
+            
+            // Simple adjustments based on question selections
+            if (q1 !== 'any') {
+                // Simulate different impact based on selection
+                if (q1 === '1-5') matchPercent -= 4;
+                else if (q1 === '6-20') matchPercent -= 2;
+                else if (q1 === '21-50') matchPercent -= 6;
+                else if (q1 === '50+') matchPercent -= 8;
+            }
+            
+            if (q2 !== 'any') {
+                // Simulate different impact based on selection
+                if (q2 === 'up-to-5k') matchPercent -= 5;
+                else if (q2 === '5k-15k') matchPercent -= 2;
+                else if (q2 === '15k-30k') matchPercent -= 5;
+                else if (q2 === '30k+') matchPercent -= 9;
+            }
+            
+            if (q3 !== 'any') {
+                // Simulate different impact based on selection
+                if (q3 === 'delivery') matchPercent -= 3;
+                else if (q3 === 'service') matchPercent -= 5;
+                else if (q3 === 'passenger') matchPercent -= 7;
+                else if (q3 === 'construction') matchPercent -= 7;
+                else if (q3 === 'mixed') matchPercent -= 8;
+            }
+            
+            // Ensure matchPercent doesn't go below 0
+            matchPercent = Math.max(matchPercent, 0);
+            
+            // Calculate sold percentage based on price
+            let soldPercent = matchPercent;
+            if (price < 25) {
+                soldPercent = Math.max(matchPercent - 14, 0);
+            } else if (price < 30) {
+                soldPercent = Math.max(matchPercent - 10, 0);
+            } else if (price < 35) {
+                soldPercent = Math.max(matchPercent - 5, 0);
+            }
+            
+            // Update match and sold percentages
+            document.getElementById('match-percent').textContent = matchPercent + '%';
+            document.getElementById('sold-percent').textContent = soldPercent + '%';
+            document.getElementById('match-progress').style.width = matchPercent + '%';
+            document.getElementById('sold-progress').style.width = soldPercent + '%';
+            document.getElementById('match-progress').querySelector('.progress-text').textContent = matchPercent + '%';
+            document.getElementById('sold-progress').querySelector('.progress-text').textContent = soldPercent + '%';
+            
+            // Update cap achievability
+            const capStatus = document.getElementById('cap-status-indicator');
+            if (price >= 35) {
+                capStatus.textContent = 'Cap Achievable';
+                capStatus.className = 'cap-status cap-achievable';
+            } else {
+                capStatus.textContent = 'Cap Unlikely to be Achieved';
+                capStatus.className = 'cap-status cap-unlikely';
+            }
+            
+            // Update unsold reasons
+            const reasonsList = document.getElementById('reasons-list');
+            reasonsList.innerHTML = '';
+            
+            if (price < 35) {
+                const priceTooLowItem = document.createElement('li');
+                const priceDifference = 35 - price;
+                priceTooLowItem.innerHTML = `<span>Price too low (need £${priceDifference} more)</span><span class="reason-percent">14%</span>`;
+                reasonsList.appendChild(priceTooLowItem);
+            }
+            
+            if (q1 === 'any') {
+                const q1Item = document.createElement('li');
+                q1Item.innerHTML = `<span>Vehicle quantity not specified</span><span class="reason-percent">17%</span>`;
+                reasonsList.appendChild(q1Item);
+            }
+            
+            if (q2 === 'any') {
+                const q2Item = document.createElement('li');
+                q2Item.innerHTML = `<span>Budget range not specified</span><span class="reason-percent">19%</span>`;
+                reasonsList.appendChild(q2Item);
+            }
+            
+            if (q3 === 'any') {
+                const q3Item = document.createElement('li');
+                q3Item.innerHTML = `<span>Fleet type not specified</span><span class="reason-percent">15%</span>`;
+                reasonsList.appendChild(q3Item);
+            }
+            
+            // Update recommendations
+            const recommendations = document.getElementById('recommendations');
+            recommendations.innerHTML = '';
+            
+            if (price < 35) {
+                const priceRec = document.createElement('div');
+                priceRec.className = 'recommendation-item';
+                priceRec.innerHTML = `<span>Increase price to £35</span><span class="recommendation-action">+14%</span>`;
+                recommendations.appendChild(priceRec);
+            }
+            
+            if (q1 === 'any') {
+                const q1Rec = document.createElement('div');
+                q1Rec.className = 'recommendation-item';
+                q1Rec.innerHTML = `<span>Target 6-20 vehicles segment</span><span class="recommendation-action">+17%</span>`;
+                recommendations.appendChild(q1Rec);
+            }
+            
+            if (q2 === 'any') {
+                const q2Rec = document.createElement('div');
+                q2Rec.className = 'recommendation-item';
+                q2Rec.innerHTML = `<span>Focus on £5,000-£15,000 budget businesses</span><span class="recommendation-action">+19%</span>`;
+                recommendations.appendChild(q2Rec);
+            }
+            
+            if (q3 === 'any') {
+                const q3Rec = document.createElement('div');
+                q3Rec.className = 'recommendation-item';
+                q3Rec.innerHTML = `<span>Target delivery fleets specifically</span><span class="recommendation-action">+15%</span>`;
+                recommendations.appendChild(q3Rec);
+            }
+            
+            // Update subscription outlook
+            const outlook = document.getElementById('outlook');
+            
+            // Calculate expected leads based on match rate and cap
+            const totalLeadsPerMonth = 1000; // Assuming 1000 leads per month for simplicity
+            const matchedLeads = Math.round(totalLeadsPerMonth * (matchPercent / 100));
+            const soldLeads = Math.round(totalLeadsPerMonth * (soldPercent / 100));
+            const capTarget = cap;
+            const capPercentage = Math.round((soldLeads / capTarget) * 100);
+            
+            // Determine outlook status
+            let outlookStatus = '';
+            let capForecast = '';
+            let priceComparison = '';
+            
+            if (price < 25) {
+                priceComparison = `significantly below market rate`;
+            } else if (price < 35) {
+                priceComparison = `below market rate`;
+            } else if (price < 40) {
+                priceComparison = `at market rate`;
+            } else {
+                priceComparison = `above market rate`;
+            }
+            
+            if (capPercentage < 30) {
+                outlookStatus = `<strong class="text-warning">unlikely to meet its monthly cap</strong>`;
+                capForecast = `<strong>${soldLeads} leads per month</strong>, which is <strong>${capPercentage}% of your target</strong>`;
+            } else if (capPercentage < 75) {
+                outlookStatus = `<strong class="text-warning">likely to fall short of its monthly cap</strong>`;
+                capForecast = `<strong>${soldLeads} leads per month</strong>, which is <strong>${capPercentage}% of your target</strong>`;
+            } else if (capPercentage < 95) {
+                outlookStatus = `<strong>likely to come close to its monthly cap</strong>`;
+                capForecast = `<strong>${soldLeads} leads per month</strong>, which is <strong>${capPercentage}% of your target</strong>`;
+            } else {
+                outlookStatus = `<strong class="text-success">likely to meet or exceed its monthly cap</strong>`;
+                capForecast = `<strong>${soldLeads} leads per month</strong>, which is <strong>${capPercentage}% of your target</strong>`;
+            }
+            
+            // Calculate potential improvement
+            const potentialSoldPercent = 55; // Example potential sold percentage
+            const potentialSoldLeads = Math.round(totalLeadsPerMonth * (potentialSoldPercent / 100));
+            
+            const html = `
+                <p>Based on current settings, this subscription is ${outlookStatus} of ${capTarget} leads. With a match rate of ${matchPercent}% and a sold rate of ${soldPercent}%, you can expect approximately ${capForecast}.</p>
+                
+                <p>In the wider client landscape, this subscription would compete with <strong>4 other clients</strong> for similar leads. The average price per lead for comparable filters is <strong>£35</strong>, making your current price of <strong>£${price}</strong> ${priceComparison}.</p>
+                
+                <p>By implementing the recommended changes, particularly ${price < 35 ? 'increasing your price to £35 and ' : ''}narrowing your audience targeting, you could potentially increase your sold rate to <strong>${potentialSoldPercent}%</strong>, yielding approximately <strong>${potentialSoldLeads} leads per month</strong>.</p>
+            `;
+            
+            outlook.innerHTML = html;
+            
+            // Update competitor table
+            updateCompetitorTable(q1, q2, q3, price);
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateResults();
+        });
+    </script>
+</body>
+</html>
