@@ -48,27 +48,6 @@
             font-size: 1.6rem;
         }
 
-        .nav-controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .dropdown-container {
-            position: relative;
-        }
-
-        .subcategory-select {
-            padding: 8px 12px;
-            border: 1px solid #8264C8;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            background-color: white;
-            color: #0F0F4B;
-            min-width: 200px;
-            cursor: pointer;
-        }
-
         .button {
             padding: 8px 16px;
             border: none;
@@ -114,6 +93,7 @@
             width: 100%;
             max-width: 800px;
             text-align: center;
+            position: relative;
         }
 
         .welcome-heading {
@@ -153,6 +133,7 @@
             gap: 20px;
             width: 100%;
             margin-top: 30px;
+            margin-bottom: 60px; /* Space for the button at bottom */
         }
 
         .category-card {
@@ -169,6 +150,11 @@
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-color: #8264C8;
+        }
+
+        .category-card.selected {
+            border: 3px solid #FF00A5;
+            box-shadow: 0 4px 12px rgba(255, 0, 165, 0.25);
         }
 
         .category-icon {
@@ -215,6 +201,12 @@
             color: #666;
             margin-top: auto;
         }
+
+        .button-container {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+        }
     </style>
 </head>
 <body>
@@ -222,20 +214,6 @@
         <a href="index.html" class="logo">
             <span class="logo-icon">⬢</span> LeadLynx
         </a>
-        <div class="nav-controls">
-            <div class="dropdown-container">
-                <select id="subcategory-select" class="subcategory-select">
-                    <option value="" disabled selected>Select Subcategory</option>
-                    <option value="epos">EPOS Systems</option>
-                    <option value="vehicletracking">Vehicle Tracking</option>
-                    <option value="solarpanels">Solar Panels</option>
-                    <option value="lasereye">Laser Eye Surgery</option>
-                </select>
-            </div>
-            <button id="create-subscription-btn" class="button button-primary" disabled>
-                <span class="icon">+</span> Create New Subscription
-            </button>
-        </div>
     </div>
 
     <div class="main-content">
@@ -244,7 +222,7 @@
             <p class="welcome-subheading">Create and manage lead generation subscriptions for various sectors. Build custom filters to target specific customer segments and optimize your lead quality.</p>
             
             <div class="cta-container">
-                <p class="instruction">Select a subcategory and click "Create New Subscription" to get started</p>
+                <p class="instruction">Select a category and click "Create New Subscription" to get started</p>
                 
                 <div class="category-cards">
                     <div class="category-card" data-category="epos">
@@ -272,6 +250,12 @@
                     </div>
                 </div>
             </div>
+
+            <div class="button-container">
+                <button id="create-subscription-btn" class="button button-primary big-button" disabled>
+                    <span class="icon">+</span> Create New Subscription
+                </button>
+            </div>
         </div>
     </div>
     
@@ -280,34 +264,35 @@
     </footer>
 
     <script>
-        // Function to enable button when category is selected
-        document.getElementById('subcategory-select').addEventListener('change', function() {
-            const createButton = document.getElementById('create-subscription-btn');
-            createButton.disabled = !this.value;
-        });
+        // Track the currently selected category
+        let selectedCategory = null;
 
         // Function to handle category card selection
         document.querySelectorAll('.category-card').forEach(card => {
             card.addEventListener('click', function() {
-                const category = this.getAttribute('data-category');
-                const selectElement = document.getElementById('subcategory-select');
+                // Remove selected class from all cards
+                document.querySelectorAll('.category-card').forEach(c => {
+                    c.classList.remove('selected');
+                });
                 
-                // Set the select value
-                selectElement.value = category;
+                // Add selected class to the clicked card
+                this.classList.add('selected');
                 
-                // Trigger the change event
-                const event = new Event('change');
-                selectElement.dispatchEvent(event);
+                // Store the selected category
+                selectedCategory = this.getAttribute('data-category');
+                
+                // Enable the Create button
+                const createButton = document.getElementById('create-subscription-btn');
+                createButton.disabled = !selectedCategory;
             });
         });
 
         // Function to create new subscription
         document.getElementById('create-subscription-btn').addEventListener('click', function() {
-            const category = document.getElementById('subcategory-select').value;
-            if (!category) return;
+            if (!selectedCategory) return;
             
-            // Redirect to the appropriate category page
-            window.location.href = `https://alexvmandel.github.io/filtertool/${category}.html`;
+            // Redirect to the appropriate category page using the existing URL pattern
+            window.location.href = `https://alexvmandel.github.io/filtertool/${selectedCategory}.html`;
         });
     </script>
 </body>
