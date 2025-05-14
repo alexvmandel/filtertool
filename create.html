@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Subscription Dashboard - Create</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
 
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0F0F4B;
+            color: #333;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0F0F4B;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            color: #FF00A5;
+            margin-right: 8px;
+            font-size: 1.6rem;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dropdown-container {
+            position: relative;
+        }
+
+        .subcategory-select {
+            padding: 8px 12px;
+            border: 1px solid #8264C8;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background-color: white;
+            color: #0F0F4B;
+            min-width: 200px;
+            cursor: pointer;
+        }
+
+        .button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .button-primary {
+            background-color: #FF00A5;
+            color: white;
+        }
+
+        .button-primary:hover {
+            background-color: #d1008a;
+        }
+
+        .button .icon {
+            margin-right: 6px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .landing-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .welcome-heading {
+            color: #0F0F4B;
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+        }
+
+        .welcome-subheading {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .cta-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .instruction {
+            font-weight: 500;
+            color: #0F0F4B;
+            margin-bottom: 10px;
+        }
+
+        .big-button {
+            padding: 12px 24px;
+            font-size: 1rem;
+        }
+
+        .category-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .category-card {
+            background-color: #f8f8fb;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: #8264C8;
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .epos-icon {
+            color: #FF00A5;
+        }
+
+        .vehicle-icon {
+            color: #8264C8;
+        }
+
+        .solar-icon {
+            color: #FADC28;
+        }
+
+        .eye-icon {
+            color: #00C8C8;
+        }
+
+        .category-name {
+            font-weight: 600;
+            color: #0F0F4B;
+        }
+
+        .category-description {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 6px;
+        }
+
+        .hidden {
+            display: none;
+        }
+        
+        footer {
+            background-color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-icon">⬢</span> LeadLynx
+        </a>
+        <div class="nav-controls">
+            <div class="dropdown-container">
+                <select id="subcategory-select" class="subcategory-select">
+                    <option value="" disabled selected>Select Subcategory</option>
+                    <option value="epos">EPOS Systems</option>
+                    <option value="vehicletracking">Vehicle Tracking</option>
+                    <option value="solarpanels">Solar Panels</option>
+                    <option value="lasereye">Laser Eye Surgery</option>
+                </select>
+            </div>
+            <button id="create-subscription-btn" class="button button-primary" disabled>
+                <span class="icon">+</span> Create New Subscription
+            </button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="landing-card">
+            <h1 class="welcome-heading">Lead Subscription Dashboard</h1>
+            <p class="welcome-subheading">Create and manage lead generation subscriptions for various sectors. Build custom filters to target specific customer segments and optimize your lead quality.</p>
+            
+            <div class="cta-container">
+                <p class="instruction">Select a subcategory and click "Create New Subscription" to get started</p>
+                
+                <div class="category-cards">
+                    <div class="category-card" data-category="epos">
+                        <div class="category-icon epos-icon">🖥️</div>
+                        <div class="category-name">EPOS Systems</div>
+                        <div class="category-description">Point of sale systems for retail and hospitality</div>
+                    </div>
+                    
+                    <div class="category-card" data-category="vehicletracking">
+                        <div class="category-icon vehicle-icon">🚗</div>
+                        <div class="category-name">Vehicle Tracking</div>
+                        <div class="category-description">GPS tracking solutions for fleet management</div>
+                    </div>
+                    
+                    <div class="category-card" data-category="solarpanels">
+                        <div class="category-icon solar-icon">☀️</div>
+                        <div class="category-name">Solar Panels</div>
+                        <div class="category-description">Renewable energy solutions for homes</div>
+                    </div>
+                    
+                    <div class="category-card" data-category="lasereye">
+                        <div class="category-icon eye-icon">👁️</div>
+                        <div class="category-name">Laser Eye Surgery</div>
+                        <div class="category-description">Vision correction procedures and consultations</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        &copy; 2025 LeadLynx. All rights reserved.
+    </footer>
+
+    <script>
+        // Function to enable button when category is selected
+        document.getElementById('subcategory-select').addEventListener('change', function() {
+            const createButton = document.getElementById('create-subscription-btn');
+            createButton.disabled = !this.value;
+        });
+
+        // Function to handle category card selection
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                const selectElement = document.getElementById('subcategory-select');
+                
+                // Set the select value
+                selectElement.value = category;
+                
+                // Trigger the change event
+                const event = new Event('change');
+                selectElement.dispatchEvent(event);
+            });
+        });
+
+        // Function to create new subscription
+        document.getElementById('create-subscription-btn').addEventListener('click', function() {
+            const category = document.getElementById('subcategory-select').value;
+            if (!category) return;
+            
+            // Redirect to the appropriate category page
+            window.location.href = `https://alexvmandel.github.io/filtertool/${category}.html`;
+        });
+    </script>
+</body>
+</html>
